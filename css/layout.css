@@ -1,0 +1,250 @@
+/* ============================================================
+   APP SHELL — Sidebar (desktop) / Bottom Nav + Drawer (mobile)
+   ============================================================ */
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---- Sidebar (desktop) ---- */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-5);
+  border-bottom: 1px solid rgba(247, 245, 244, 0.1);
+}
+.sidebar-brand .brand-mark {
+  width: 32px; height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.sidebar-brand .brand-name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-md);
+  color: var(--color-paper);
+}
+.sidebar-brand .brand-sub {
+  font-size: var(--fs-xs);
+  color: var(--color-slate-soft);
+}
+
+.sidebar-nav {
+  flex: 1;
+  min-height: 0; /* critical: without this, a flex child won't shrink below
+                    its content height, so overflow-y:auto never kicks in
+                    and this can push .sidebar-footer off-screen entirely */
+  padding: var(--sp-4) var(--sp-3);
+  overflow-y: auto;
+}
+.sidebar-nav-group { margin-bottom: var(--sp-5); }
+.sidebar-nav-label {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-slate-soft);
+  padding: 0 var(--sp-3);
+  margin-bottom: var(--sp-2);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-3);
+  border-radius: var(--radius-md);
+  color: rgba(247, 245, 244, 0.75);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+  min-height: 44px;
+}
+.nav-link:hover { background: rgba(247, 245, 244, 0.08); color: var(--color-paper); text-decoration: none; }
+.nav-link.active { background: rgba(232, 197, 71, 0.15); color: var(--color-tag-gold); }
+.nav-link .nav-icon { width: 20px; height: 20px; flex-shrink: 0; }
+.nav-link .nav-badge {
+  margin-left: auto;
+  background: var(--color-rust);
+  color: white;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+.nav-link.is-disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.nav-link.is-disabled:hover { background: none; color: rgba(247, 245, 244, 0.75); }
+.nav-soon-tag {
+  margin-left: auto;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-slate-soft);
+  border: 1px solid rgba(247, 245, 244, 0.2);
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+
+.sidebar-footer {
+  flex-shrink: 0;
+  padding: var(--sp-4) var(--sp-3);
+  border-top: 1px solid rgba(247, 245, 244, 0.1);
+}
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+}
+.user-chip .avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--color-ink-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  color: var(--color-paper);
+  flex-shrink: 0;
+}
+.user-chip .user-name { font-size: var(--fs-sm); font-weight: 600; color: var(--color-paper); }
+.user-chip .user-role { font-size: var(--fs-xs); color: var(--color-slate-soft); text-transform: capitalize; }
+.user-chip .user-meta { flex: 1; min-width: 0; overflow: hidden; }
+.user-chip .user-name, .user-chip .user-role { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* The logout button sits on the dark sidebar — .btn-ghost's default
+   color (--color-slate) is a light-background gray and is nearly
+   invisible here, so it needs its own light-on-dark treatment. */
+.user-chip .btn-ghost {
+  color: var(--color-tag-gold);
+  flex-shrink: 0;
+}
+.user-chip .btn-ghost:hover {
+  color: var(--color-ink);
+  background: var(--color-tag-gold);
+}
+
+/* ---- Main content area ---- */
+.main-area {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: var(--topbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--sp-6);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.topbar h1 { margin: 0; font-size: var(--fs-lg); }
+.topbar-actions { display: flex; align-items: center; gap: var(--sp-3); }
+
+.menu-toggle {
+  display: none;
+  width: 40px; height: 40px;
+  align-items: center; justify-content: center;
+  border-radius: var(--radius-md);
+}
+.menu-toggle:hover { background: var(--color-border); }
+
+.content {
+  flex: 1;
+  padding: var(--sp-6);
+  max-width: var(--max-content-width);
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   MOBILE (< 1024px): sidebar becomes a slide-in drawer,
+   plus a fixed bottom tab bar for primary nav.
+   ============================================================ */
+@media (max-width: 1023px) {
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0;
+    height: 100vh;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform var(--dur-base) var(--ease-out);
+    box-shadow: var(--shadow-lg);
+  }
+  .sidebar.is-open { transform: translateX(0); }
+
+  .sidebar-scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(34, 31, 32, 0.5);
+    z-index: 190;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+  .sidebar-scrim.is-visible { opacity: 1; pointer-events: auto; }
+
+  .menu-toggle { display: flex; }
+
+  .content { padding: var(--sp-4); padding-bottom: calc(var(--bottomnav-height) + var(--sp-6)); }
+
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: var(--bottomnav-height);
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .bottom-nav-link {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: var(--color-slate);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    position: relative;
+  }
+  .bottom-nav-link.active { color: var(--color-ink); }
+  .bottom-nav-link .nav-icon { width: 22px; height: 22px; }
+  .bottom-nav-link .nav-badge {
+    position: absolute;
+    top: 4px; right: 28%;
+    background: var(--color-rust);
+    color: white;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .bottom-nav { display: none; }
+  .sidebar-scrim { display: none; }
+}

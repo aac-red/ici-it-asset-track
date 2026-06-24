@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AssetTrack</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <style>
+    body { background: var(--color-ink); }
+  </style>
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script type="module">
+    import { getCurrentProfile } from './js/auth/auth.js';
+    const profile = await getCurrentProfile();
+    window.location.href = profile ? 'dashboard.html' : 'login.html';
+  </script>
+</body>
+</html>

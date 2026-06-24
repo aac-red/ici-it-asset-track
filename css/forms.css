@@ -1,0 +1,91 @@
+/* ============================================================
+   FORM LAYOUT HELPERS
+   ============================================================ */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 var(--sp-4);
+}
+.form-grid .field-full { grid-column: 1 / -1; }
+
+@media (max-width: 480px) {
+  .form-grid { grid-template-columns: 1fr; }
+}
+
+.input-with-suffix {
+  display: flex;
+  gap: var(--sp-2);
+}
+.input-with-suffix input { flex: 1; }
+
+.confirm-dialog-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--color-rust-bg);
+  color: var(--color-rust);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto var(--sp-4);
+}
+.confirm-dialog-body { text-align: center; }
+
+/* ---- Picker list (used in Issue Item flow: pick item, pick borrower) ---- */
+.picker-list {
+  max-height: 260px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.picker-option {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--color-border);
+  cursor: pointer;
+  min-height: 44px;
+}
+.picker-option:last-child { border-bottom: none; }
+.picker-option:hover { background: var(--color-paper); }
+.picker-option.selected { background: var(--color-signal-bg); }
+.picker-option .picker-main { flex: 1; min-width: 0; }
+.picker-option .picker-title { font-weight: 600; font-size: var(--fs-sm); }
+.picker-option .picker-sub { font-size: var(--fs-xs); color: var(--color-slate-soft); }
+.picker-option input[type="radio"] { width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--color-signal); }
+
+.picker-selected-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--color-paper);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--sp-3);
+}
+.picker-selected-summary .btn-ghost { margin-left: auto; }
+
+/* ---- Step indicator (Issue Item modal) ---- */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+  font-size: var(--fs-xs);
+  color: var(--color-slate-soft);
+}
+.step-indicator .step {
+  display: flex; align-items: center; gap: var(--sp-2);
+}
+.step-indicator .step-num {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--color-border);
+  color: var(--color-slate);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 0.6875rem;
+}
+.step-indicator .step.is-active .step-num { background: var(--color-ink); color: var(--color-paper); }
+.step-indicator .step.is-active { color: var(--color-ink); font-weight: 600; }
+.step-indicator .step.is-done .step-num { background: var(--color-signal); color: white; }
+.step-indicator .step-divider { width: 16px; height: 1px; background: var(--color-border-strong); }

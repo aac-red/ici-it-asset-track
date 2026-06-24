@@ -1,0 +1,284 @@
+/* ============================================================
+   COMPONENTS
+   ============================================================ */
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--fs-sm);
+  line-height: 1;
+  transition: background var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out),
+              box-shadow var(--dur-fast) var(--ease-out);
+  min-height: 44px; /* touch target */
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+.btn-primary:hover { background: var(--color-ink-soft); }
+
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1px solid var(--color-border-strong);
+}
+.btn-secondary:hover { background: var(--color-paper); }
+
+.btn-danger {
+  background: var(--color-surface);
+  color: var(--color-rust);
+  border: 1px solid var(--color-rust);
+}
+.btn-danger:hover { background: var(--color-rust-bg); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-slate);
+  padding: var(--sp-2) var(--sp-3);
+}
+.btn-ghost:hover { background: var(--color-border); color: var(--color-ink); }
+
+.btn-sm { padding: var(--sp-2) var(--sp-4); font-size: var(--fs-xs); min-height: 36px; }
+.btn-block { width: 100%; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---- Form fields ---- */
+.field { margin-bottom: var(--sp-5); }
+
+.field label {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-bottom: var(--sp-2);
+}
+
+.field .hint {
+  font-size: var(--fs-xs);
+  color: var(--color-slate-soft);
+  margin-top: var(--sp-1);
+}
+
+.field .error-msg {
+  font-size: var(--fs-xs);
+  color: var(--color-rust);
+  margin-top: var(--sp-1);
+  display: none;
+}
+.field.has-error .error-msg { display: block; }
+.field.has-error input,
+.field.has-error select { border-color: var(--color-rust); }
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="search"],
+input[type="tel"],
+select,
+textarea {
+  width: 100%;
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  min-height: 44px;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--color-focus);
+}
+
+textarea { min-height: 88px; resize: vertical; }
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235E5658' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--sp-4) center;
+  padding-right: var(--sp-8);
+}
+
+/* ---- Card / Panel ---- */
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-6);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---- Signature element: ASSET TAG CHIP ----
+   A die-cut equipment-tag look: rounded rect with a small notch
+   "hole" on the left, monospace ID. Used wherever an asset_tag
+   appears (tables, cards, issue flow, transaction history). */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-tag-gold-ink);
+  background: var(--color-tag-gold);
+  padding: var(--sp-1) var(--sp-3) var(--sp-1) var(--sp-2);
+  border-radius: var(--radius-sm);
+  position: relative;
+  line-height: 1.6;
+}
+.tag-chip::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-paper);
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(92, 74, 18, 0.25);
+}
+.tag-chip.tag-chip-muted {
+  background: var(--color-border);
+  color: var(--color-slate);
+}
+.tag-chip.tag-chip-muted::before { box-shadow: inset 0 0 0 1px var(--color-border-strong); }
+
+/* ---- Status Badge ---- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--radius-full);
+  text-transform: capitalize;
+}
+.badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.badge-available { background: var(--color-signal-bg); color: var(--color-signal); }
+.badge-borrowed  { background: var(--color-amber-bg); color: var(--color-amber); }
+.badge-overdue   { background: var(--color-rust-bg); color: var(--color-rust); }
+.badge-returned  { background: var(--color-signal-bg); color: var(--color-signal); }
+.badge-maintenance { background: var(--color-border); color: var(--color-slate); }
+.badge-retired   { background: var(--color-border); color: var(--color-slate-soft); }
+.badge-active    { background: var(--color-amber-bg); color: var(--color-amber); }
+
+/* ---- Empty state ---- */
+.empty-state {
+  text-align: center;
+  padding: var(--sp-12) var(--sp-6);
+  color: var(--color-slate);
+}
+.empty-state h3 { color: var(--color-ink); margin-bottom: var(--sp-2); }
+.empty-state p { max-width: 360px; margin: 0 auto var(--sp-5); }
+
+/* ---- Toast (feedback messages) ---- */
+.toast-stack {
+  position: fixed;
+  bottom: var(--sp-6);
+  right: var(--sp-6);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.toast {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  padding: var(--sp-4) var(--sp-5);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: var(--fs-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 240px;
+  animation: toast-in var(--dur-base) var(--ease-out);
+}
+.toast.toast-error { background: var(--color-rust); }
+.toast.toast-success { background: var(--color-signal); }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 640px) {
+  .toast-stack { left: var(--sp-4); right: var(--sp-4); bottom: calc(var(--bottomnav-height) + var(--sp-4)); }
+  .toast { min-width: 0; }
+}
+
+/* ---- Modal ---- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(34, 31, 32, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  padding: var(--sp-4);
+}
+.modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  max-width: 480px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: modal-in var(--dur-base) var(--ease-out);
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-5) var(--sp-6);
+  border-bottom: 1px solid var(--color-border);
+}
+.modal-body { padding: var(--sp-6); }
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  padding: var(--sp-5) var(--sp-6);
+  border-top: 1px solid var(--color-border);
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.97) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Full-screen sheet on mobile instead of centered modal */
+@media (max-width: 640px) {
+  .modal-overlay { padding: 0; align-items: flex-end; }
+  .modal {
+    max-width: 100%;
+    width: 100%;
+    max-height: 92vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    animation: sheet-in var(--dur-base) var(--ease-out);
+  }
+  @keyframes sheet-in {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+}
