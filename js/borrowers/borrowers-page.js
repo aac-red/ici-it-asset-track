@@ -216,7 +216,7 @@ async function handleSaveBorrower(overlay, existingBorrower) {
 
   const payload = {
     full_name: fullName,
-    initials: (get('initials').value.trim() || autoInitials(fullName)).toUpperCase().slice(0, 3) || null,
+    initials: (get('initials').value.trim() || autoInitials(fullName)).toUpperCase().slice(0, 6) || null,
     department: get('department').value.trim() || null,
     employee_id: get('employeeId').value.trim() || null,
     email: get('email').value.trim() || null,
