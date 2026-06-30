@@ -66,5 +66,5 @@ export function emailLayout(title, bodyHtml) {
 }
 
 export function tagChipHTML(tag) {
-  return `<span style="font-family: monospace; font-weight:600; background:#F68B37; color:#6B3408; padding:2px 8px; border-radius:6px; font-size:13px;">${tag}</span>`;
+  return `<span style="font-family: monospace; font-weight:600; background:#F68B37; color:#4D2305; padding:2px 8px; border-radius:6px; font-size:13px;">${tag}</span>`;
 }

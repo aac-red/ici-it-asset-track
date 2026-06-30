@@ -23,12 +23,12 @@
 
   --color-signal: #2D6A4F;       /* available / returned / success */
   --color-signal-bg: #E5F2EB;
-  --color-rust: #EE3233;         /* overdue / destructive / urgent — brand red */
-  --color-rust-bg: #FCE4E4;
-  --color-amber: #B8860B;        /* maintenance / warning, distinct from rust */
+  --color-rust: #D62A2B;         /* overdue / destructive / urgent — brand red, darkened slightly from #EE3233 for WCAG AA text contrast on white (4.97:1) */
+  --color-rust-bg: #FFF5F5;      /* lightened from #FCE4E4 so red badge text clears WCAG AA (4.65:1) */
+  --color-amber: #8A6508;        /* maintenance / warning, distinct from rust — darkened for WCAG AA (4.75:1 on amber-bg) */
   --color-amber-bg: #FBF1DD;
   --color-tag-gold: #F68B37;     /* asset tag chip accent + brand orange — signature element */
-  --color-tag-gold-ink: #6B3408; /* text on orange chip */
+  --color-tag-gold-ink: #4D2305; /* text on orange chip — darkened for WCAG AA contrast (5.56:1) */
 
   --color-focus: #3B7DD8;        /* keyboard focus ring — distinct from all status colors */
 

@@ -74,7 +74,7 @@
   min-height: 44px;
 }
 .nav-link:hover { background: rgba(247, 245, 244, 0.08); color: var(--color-paper); text-decoration: none; }
-.nav-link.active { background: rgba(232, 197, 71, 0.15); color: var(--color-tag-gold); }
+.nav-link.active { background: rgba(246, 139, 55, 0.15); color: var(--color-tag-gold); }
 .nav-link .nav-icon { width: 20px; height: 20px; flex-shrink: 0; }
 .nav-link .nav-badge {
   margin-left: auto;

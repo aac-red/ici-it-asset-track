@@ -209,27 +209,61 @@ async function renderIssueStep(overlay, flowState) {
         slot.innerHTML = `<div class="empty-state"><h3>No items available</h3><p>All equipment is currently borrowed, in maintenance, or retired.</p></div>`;
         return;
       }
+
+      const selectItem = (item) => {
+        flowState.item = item;
+        flowState.step = 2;
+        renderIssueStep(overlay, flowState);
+      };
+
       slot.innerHTML = `
-        <div class="picker-list">
-          ${items.map(item => `
-            <label class="picker-option" data-item-id="${item.id}">
-              <input type="radio" name="itemPick" value="${item.id}">
-              <div class="picker-main">
-                <div class="picker-title">${escapeHTML(item.name)}</div>
-                <div class="picker-sub"><span class="tag-chip" style="font-size:0.6875rem; padding:1px 8px 1px 6px;">${escapeHTML(item.asset_tag)}</span> · ${escapeHTML(item.category)}</div>
-              </div>
-            </label>
-          `).join('')}
+        <div class="field" style="margin-bottom: var(--sp-3);">
+          <input type="search" id="itemPickerSearch" placeholder="Search by name, tag, or category…" aria-label="Search items">
         </div>
+        <div class="picker-list" id="itemPickerList"></div>
       `;
-      slot.querySelectorAll('.picker-option').forEach((opt) => {
-        opt.addEventListener('click', () => {
-          const itemId = opt.dataset.itemId;
-          flowState.item = items.find(i => i.id === itemId);
-          flowState.step = 2;
-          renderIssueStep(overlay, flowState);
+
+      const listEl = slot.querySelector('#itemPickerList');
+      const searchInput = slot.querySelector('#itemPickerSearch');
+
+      const renderList = (filtered) => {
+        if (filtered.length === 0) {
+          listEl.innerHTML = `<p class="cell-muted" style="padding: var(--sp-4);">No items match your search.</p>`;
+          return;
+        }
+        listEl.innerHTML = filtered.map(item => `
+          <label class="picker-option" data-item-id="${item.id}">
+            <input type="radio" name="itemPick" value="${item.id}">
+            <div class="picker-main">
+              <div class="picker-title">${escapeHTML(item.name)}</div>
+              <div class="picker-sub"><span class="tag-chip" style="font-size:0.6875rem; padding:1px 8px 1px 6px;">${escapeHTML(item.asset_tag)}</span> · ${escapeHTML(item.category)}</div>
+            </div>
+          </label>
+        `).join('');
+        listEl.querySelectorAll('.picker-option').forEach((opt) => {
+          opt.addEventListener('click', () => {
+            const itemId = opt.dataset.itemId;
+            selectItem(filtered.find(i => i.id === itemId));
+          });
         });
+      };
+
+      renderList(items);
+
+      searchInput.addEventListener('input', () => {
+        const term = searchInput.value.trim().toLowerCase();
+        const filtered = term
+          ? items.filter(i =>
+              i.name.toLowerCase().includes(term) ||
+              i.asset_tag.toLowerCase().includes(term) ||
+              i.category.toLowerCase().includes(term))
+          : items;
+        renderList(filtered);
       });
+
+      // Autofocus the search box so typing works immediately on desktop —
+      // skipped on touch devices to avoid popping the keyboard unprompted.
+      if (!('ontouchstart' in window)) searchInput.focus();
     } catch (err) {
       body.querySelector('#itemPickerSlot').innerHTML = `<div class="empty-state"><h3>Couldn't load items</h3><p>${escapeHTML(err.message)}</p></div>`;
     }
@@ -262,27 +296,59 @@ async function renderIssueStep(overlay, flowState) {
         slot.innerHTML = `<div class="empty-state"><h3>No borrowers yet</h3><p>Add a borrower first from the Borrowers page.</p></div>`;
         return;
       }
+
+      const selectBorrower = (borrower) => {
+        flowState.borrower = borrower;
+        flowState.step = 3;
+        renderIssueStep(overlay, flowState);
+      };
+
       slot.innerHTML = `
-        <div class="picker-list">
-          ${borrowers.map(b => `
-            <label class="picker-option" data-borrower-id="${b.id}">
-              <input type="radio" name="borrowerPick" value="${b.id}">
-              <div class="picker-main">
-                <div class="picker-title">${escapeHTML(b.full_name)}</div>
-                <div class="picker-sub">${escapeHTML(b.department || 'No department')}</div>
-              </div>
-            </label>
-          `).join('')}
+        <div class="field" style="margin-bottom: var(--sp-3);">
+          <input type="search" id="borrowerPickerSearch" placeholder="Search by name or department…" aria-label="Search borrowers">
         </div>
+        <div class="picker-list" id="borrowerPickerList"></div>
       `;
-      slot.querySelectorAll('.picker-option').forEach((opt) => {
-        opt.addEventListener('click', () => {
-          const borrowerId = opt.dataset.borrowerId;
-          flowState.borrower = borrowers.find(b => b.id === borrowerId);
-          flowState.step = 3;
-          renderIssueStep(overlay, flowState);
+
+      const listEl = slot.querySelector('#borrowerPickerList');
+      const searchInput = slot.querySelector('#borrowerPickerSearch');
+
+      const renderList = (filtered) => {
+        if (filtered.length === 0) {
+          listEl.innerHTML = `<p class="cell-muted" style="padding: var(--sp-4);">No borrowers match your search.</p>`;
+          return;
+        }
+        listEl.innerHTML = filtered.map(b => `
+          <label class="picker-option" data-borrower-id="${b.id}">
+            <input type="radio" name="borrowerPick" value="${b.id}">
+            <div class="picker-main">
+              <div class="picker-title">${escapeHTML(b.full_name)}</div>
+              <div class="picker-sub">${escapeHTML(b.department || 'No department')}</div>
+            </div>
+          </label>
+        `).join('');
+        listEl.querySelectorAll('.picker-option').forEach((opt) => {
+          opt.addEventListener('click', () => {
+            const borrowerId = opt.dataset.borrowerId;
+            selectBorrower(filtered.find(b => b.id === borrowerId));
+          });
         });
+      };
+
+      renderList(borrowers);
+
+      searchInput.addEventListener('input', () => {
+        const term = searchInput.value.trim().toLowerCase();
+        const filtered = term
+          ? borrowers.filter(b =>
+              b.full_name.toLowerCase().includes(term) ||
+              (b.department || '').toLowerCase().includes(term) ||
+              (b.initials || '').toLowerCase().includes(term))
+          : borrowers;
+        renderList(filtered);
       });
+
+      if (!('ontouchstart' in window)) searchInput.focus();
     } catch (err) {
       body.querySelector('#borrowerPickerSlot').innerHTML = `<div class="empty-state"><h3>Couldn't load borrowers</h3><p>${escapeHTML(err.message)}</p></div>`;
     }

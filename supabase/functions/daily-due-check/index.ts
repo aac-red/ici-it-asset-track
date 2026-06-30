@@ -86,7 +86,7 @@ Deno.serve(async (_req) => {
             subject: `Overdue: ${loan.items.name} (${loan.items.asset_tag})`,
             html: emailLayout("Item Overdue", `
               <p>Hi ${loan.borrowers?.full_name || "there"},</p>
-              <p>The following item is now <strong style="color:#EE3233;">overdue</strong>:</p>
+              <p>The following item is now <strong style="color:#D62A2B;">overdue</strong>:</p>
               <table style="width:100%; margin:16px 0; font-size:14px;">
                 <tr><td style="padding:4px 0; color:#5E5658;">Item</td><td style="padding:4px 0; font-weight:600;">${loan.items.name}</td></tr>
                 <tr><td style="padding:4px 0; color:#5E5658;">Asset Tag</td><td style="padding:4px 0;">${tagChipHTML(loan.items.asset_tag)}</td></tr>

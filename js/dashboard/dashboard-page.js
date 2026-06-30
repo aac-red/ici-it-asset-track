@@ -142,7 +142,7 @@ function renderStatusChart(byStatus) {
   const ctx = document.getElementById('statusChart');
   const colorMap = {
     available: '#2D6A4F',
-    borrowed: '#B8860B',
+    borrowed: '#8A6508',
     maintenance: '#5E5658',
     retired: '#CFC8C5',
   };

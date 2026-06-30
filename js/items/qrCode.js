@@ -23,7 +23,7 @@ export function itemDeepLink(itemId) {
  */
 export function renderQRCode(container, text, size = 96) {
   if (typeof QRCode === 'undefined') {
-    container.innerHTML = '<p style="font-size:12px; color:#EE3233;">QR library failed to load. Check your internet connection.</p>';
+    container.innerHTML = '<p style="font-size:12px; color:#D62A2B;">QR library failed to load. Check your internet connection.</p>';
     return;
   }
   container.innerHTML = '';
@@ -51,7 +51,7 @@ export function printSingleSticker(item, qrDataUrl) {
           body { font-family: Arial, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
           .sticker { border:1px dashed #999; border-radius:6px; padding:14px; display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; }
           img { width:120px; height:120px; }
-          .tag { font-family: 'Courier New', monospace; font-size:13px; font-weight:700; background:#F68B37; color:#6B3408; padding:2px 8px; border-radius:4px; }
+          .tag { font-family: 'Courier New', monospace; font-size:13px; font-weight:700; background:#F68B37; color:#4D2305; padding:2px 8px; border-radius:4px; }
           .name { font-size:12px; color:#221F20; max-width:140px; }
         </style>
       </head>
@@ -91,7 +91,7 @@ export function printStickerSheet(entries) {
           .sheet { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
           .sticker { border:1px dashed #999; border-radius:6px; padding:10px; display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; break-inside: avoid; }
           img { width:90px; height:90px; }
-          .tag { font-family: 'Courier New', monospace; font-size:12px; font-weight:700; background:#F68B37; color:#6B3408; padding:1px 6px; border-radius:4px; }
+          .tag { font-family: 'Courier New', monospace; font-size:12px; font-weight:700; background:#F68B37; color:#4D2305; padding:1px 6px; border-radius:4px; }
           .name { font-size:11px; color:#221F20; max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         </style>
       </head>

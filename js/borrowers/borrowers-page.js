@@ -161,7 +161,7 @@ async function openBorrowerForm(borrower = null) {
             </div>
             <div class="field">
               <label for="initials">Initials</label>
-              <input type="text" id="initials" maxlength="3" style="text-transform:uppercase;" value="${borrower ? escapeAttr(borrower.initials || '') : ''}" placeholder="e.g. JDC">
+              <input type="text" id="initials" maxlength="6" style="text-transform:uppercase;" value="${borrower ? escapeAttr(borrower.initials || '') : ''}" placeholder="e.g. JDC">
               <div class="hint">Up to 3 letters. Used on the avatar; auto-filled from the name if left blank.</div>
             </div>
             <div class="field">
