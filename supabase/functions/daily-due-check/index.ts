@@ -57,16 +57,14 @@ Deno.serve(async (_req) => {
           await sendEmail({
             to: loan.borrowers.email,
             subject: `Reminder: ${loan.items.name} is due tomorrow`,
-            html: emailLayout("Due Tomorrow", `
-              <p>Hi ${loan.borrowers.full_name},</p>
-              <p>This is a friendly reminder that the following item is due back tomorrow:</p>
-              <table style="width:100%; margin:16px 0; font-size:14px;">
-                <tr><td style="padding:4px 0; color:#5E5658;">Item</td><td style="padding:4px 0; font-weight:600;">${loan.items.name}</td></tr>
-                <tr><td style="padding:4px 0; color:#5E5658;">Asset Tag</td><td style="padding:4px 0;">${tagChipHTML(loan.items.asset_tag)}</td></tr>
-                <tr><td style="padding:4px 0; color:#5E5658;">Due</td><td style="padding:4px 0; font-weight:600;">${dueDateStr}</td></tr>
-              </table>
-              <p>Please return it on time, or reach out if you need an extension.</p>
-            `),
+            html: emailLayout("Due Tomorrow", `<p>Hi ${loan.borrowers.full_name},</p>
+<p>This is a friendly reminder that the following item is due back tomorrow:</p>
+<table style="width:100%; margin:16px 0; font-size:14px;">
+<tr><td style="padding:4px 0; color:#5E5658;">Item</td><td style="padding:4px 0; font-weight:600;">${loan.items.name}</td></tr>
+<tr><td style="padding:4px 0; color:#5E5658;">Asset Tag</td><td style="padding:4px 0;">${tagChipHTML(loan.items.asset_tag)}</td></tr>
+<tr><td style="padding:4px 0; color:#5E5658;">Due</td><td style="padding:4px 0; font-weight:600;">${dueDateStr}</td></tr>
+</table>
+<p>Please return it on time, or reach out if you need an extension.</p>`),
           });
           remindersSent++;
         } catch (e) {
@@ -84,16 +82,14 @@ Deno.serve(async (_req) => {
           await sendEmail({
             to: recipient,
             subject: `Overdue: ${loan.items.name} (${loan.items.asset_tag})`,
-            html: emailLayout("Item Overdue", `
-              <p>Hi ${loan.borrowers?.full_name || "there"},</p>
-              <p>The following item is now <strong style="color:#D62A2B;">overdue</strong>:</p>
-              <table style="width:100%; margin:16px 0; font-size:14px;">
-                <tr><td style="padding:4px 0; color:#5E5658;">Item</td><td style="padding:4px 0; font-weight:600;">${loan.items.name}</td></tr>
-                <tr><td style="padding:4px 0; color:#5E5658;">Asset Tag</td><td style="padding:4px 0;">${tagChipHTML(loan.items.asset_tag)}</td></tr>
-                <tr><td style="padding:4px 0; color:#5E5658;">Was due</td><td style="padding:4px 0; font-weight:600;">${dueDateStr}</td></tr>
-              </table>
-              <p>Please return it as soon as possible.</p>
-            `),
+            html: emailLayout("Item Overdue", `<p>Hi ${loan.borrowers?.full_name || "there"},</p>
+<p>The following item is now <strong style="color:#D62A2B;">overdue</strong>:</p>
+<table style="width:100%; margin:16px 0; font-size:14px;">
+<tr><td style="padding:4px 0; color:#5E5658;">Item</td><td style="padding:4px 0; font-weight:600;">${loan.items.name}</td></tr>
+<tr><td style="padding:4px 0; color:#5E5658;">Asset Tag</td><td style="padding:4px 0;">${tagChipHTML(loan.items.asset_tag)}</td></tr>
+<tr><td style="padding:4px 0; color:#5E5658;">Was due</td><td style="padding:4px 0; font-weight:600;">${dueDateStr}</td></tr>
+</table>
+<p>Please return it as soon as possible.</p>`),
           });
           overdueAlertsSent++;
         } catch (e) {

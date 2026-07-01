@@ -33,30 +33,26 @@ Deno.serve(async (req) => {
     switch (type) {
       case "issued": {
         subject = `Item issued: ${data.itemName} (${data.assetTag})`;
-        html = emailLayout("Item Issued to You", `
-          <p>Hi ${data.borrowerName},</p>
-          <p>The following item has been issued to you:</p>
-          <table style="width:100%; margin:16px 0; font-size:14px;">
-            <tr><td style="padding:4px 0; color:#5E5658;">Item</td><td style="padding:4px 0; font-weight:600;">${data.itemName}</td></tr>
-            <tr><td style="padding:4px 0; color:#5E5658;">Asset Tag</td><td style="padding:4px 0;">${tagChipHTML(data.assetTag)}</td></tr>
-            <tr><td style="padding:4px 0; color:#5E5658;">Due back</td><td style="padding:4px 0; font-weight:600;">${data.dueDate}</td></tr>
-          </table>
-          <p>Please return it on or before the due date. Reply to this email or contact your IT administrator with any questions.</p>
-        `);
+        html = emailLayout("Item Issued to You", `<p>Hi ${data.borrowerName},</p>
+<p>The following item has been issued to you:</p>
+<table style="width:100%; margin:16px 0; font-size:14px;">
+<tr><td style="padding:4px 0; color:#5E5658;">Item</td><td style="padding:4px 0; font-weight:600;">${data.itemName}</td></tr>
+<tr><td style="padding:4px 0; color:#5E5658;">Asset Tag</td><td style="padding:4px 0;">${tagChipHTML(data.assetTag)}</td></tr>
+<tr><td style="padding:4px 0; color:#5E5658;">Due back</td><td style="padding:4px 0; font-weight:600;">${data.dueDate}</td></tr>
+</table>
+<p>Please return it on or before the due date. Reply to this email or contact your IT administrator with any questions.</p>`);
         break;
       }
 
       case "returned": {
         subject = `Return confirmed: ${data.itemName} (${data.assetTag})`;
-        html = emailLayout("Return Confirmed", `
-          <p>Hi ${data.borrowerName},</p>
-          <p>This confirms we've received the following item back:</p>
-          <table style="width:100%; margin:16px 0; font-size:14px;">
-            <tr><td style="padding:4px 0; color:#5E5658;">Item</td><td style="padding:4px 0; font-weight:600;">${data.itemName}</td></tr>
-            <tr><td style="padding:4px 0; color:#5E5658;">Asset Tag</td><td style="padding:4px 0;">${tagChipHTML(data.assetTag)}</td></tr>
-          </table>
-          <p>Thanks for returning it. No further action is needed.</p>
-        `);
+        html = emailLayout("Return Confirmed", `<p>Hi ${data.borrowerName},</p>
+<p>This confirms we've received the following item back:</p>
+<table style="width:100%; margin:16px 0; font-size:14px;">
+<tr><td style="padding:4px 0; color:#5E5658;">Item</td><td style="padding:4px 0; font-weight:600;">${data.itemName}</td></tr>
+<tr><td style="padding:4px 0; color:#5E5658;">Asset Tag</td><td style="padding:4px 0;">${tagChipHTML(data.assetTag)}</td></tr>
+</table>
+<p>Thanks for returning it. No further action is needed.</p>`);
         break;
       }
 

@@ -73,19 +73,18 @@ export async function sendEmail({ to, subject, html }) {
 
 /** Shared wrapper so every email looks consistent and on-brand. */
 export function emailLayout(title, bodyHtml) {
-  return `
-  <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #221F20;">
-    <div style="background:#221F20; padding:16px 20px; border-radius:10px 10px 0 0;">
-      <span style="font-weight:700; color:#F7F5F4; font-size:16px;">AssetTrack</span>
-    </div>
-    <div style="border:1px solid #E6E1DF; border-top:none; border-radius:0 0 10px 10px; padding:24px;">
-      <h2 style="margin:0 0 12px 0; font-size:18px;">${title}</h2>
-      ${bodyHtml}
-    </div>
-    <p style="font-size:12px; color:#948C8E; margin-top:16px; text-align:center;">
-      This is an automated message from your organization's AssetTrack system.
-    </p>
-  </div>`;
+  return `<div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #221F20;">
+<div style="background:#221F20; padding:16px 20px; border-radius:10px 10px 0 0;">
+<span style="font-weight:700; color:#F7F5F4; font-size:16px;">AssetTrack</span>
+</div>
+<div style="border:1px solid #E6E1DF; border-top:none; border-radius:0 0 10px 10px; padding:24px;">
+<h2 style="margin:0 0 12px 0; font-size:18px;">${title}</h2>
+${bodyHtml}
+</div>
+<p style="font-size:12px; color:#948C8E; margin-top:16px; text-align:center;">
+This is an automated message from your organization's AssetTrack system.
+</p>
+</div>`;
 }
 
 export function tagChipHTML(tag) {
