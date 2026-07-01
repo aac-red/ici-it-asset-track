@@ -12,6 +12,28 @@ const GMAIL_USER = Deno.env.get("GMAIL_USER");
 const GMAIL_APP_PASSWORD = Deno.env.get("GMAIL_APP_PASSWORD");
 
 /**
+ * Strip HTML tags down to a reasonably clean plain-text fallback.
+ * denomailer requires an explicit `content` (plain-text) field —
+ * leaving it unset/relying on its 'auto' mode is what caused stray
+ * "=20" quoted-printable artifacts to leak into the rendered email.
+ */
+function htmlToPlainText(html) {
+  return html
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/td>\s*<td[^>]*>/gi, ':  ')
+    .replace(/<\/(p|div|h[1-6]|tr|td)>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+/**
  * Send an email via Gmail SMTP.
  * @param {object} params
  * @param {string} params.to - recipient email
@@ -42,6 +64,7 @@ export async function sendEmail({ to, subject, html }) {
     from: `AssetTrack <${GMAIL_USER}>`,
     to,
     subject,
+    content: htmlToPlainText(html),
     html,
   });
 

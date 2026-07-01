@@ -58,6 +58,13 @@ button {
   background: none;
 }
 
+input[type="checkbox"] {
+  accent-color: var(--color-tag-gold);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
 table {
   border-collapse: collapse;
   width: 100%;

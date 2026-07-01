@@ -38,28 +38,69 @@ export function renderQRCode(container, text, size = 96) {
 }
 
 /**
- * Open a small browser print window with a single sticker
- * (QR + asset tag + name) ready to print.
+ * Open a print window with one or more copies of the sticker
+ * (QR + asset tag + name) laid out in a 3-per-row grid.
+ * @param {object} item
+ * @param {string} qrDataUrl
+ * @param {number} copies - how many stickers to print (1–20)
  */
-export function printSingleSticker(item, qrDataUrl) {
-  const win = window.open('', '_blank', 'width=320,height=420');
+export function printSingleSticker(item, qrDataUrl, copies = 1) {
+  const count = Math.max(1, Math.min(20, copies));
+  const stickerHTML = `
+    <div class="sticker">
+      <img src="${qrDataUrl}" alt="QR code">
+      <span class="tag">${escapeHTML(item.asset_tag)}</span>
+      <span class="name">${escapeHTML(item.name)}</span>
+    </div>`;
+
+  const isSingle = count === 1;
+  const win = window.open('', '_blank', isSingle ? 'width=320,height=420' : 'width=700,height=800');
+
   win.document.write(`
     <html>
       <head>
-        <title>Print sticker — ${escapeHTML(item.asset_tag)}</title>
+        <title>Print sticker — ${escapeHTML(item.asset_tag)} (${count}×)</title>
         <style>
-          body { font-family: Arial, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; }
-          .sticker { border:1px dashed #999; border-radius:6px; padding:14px; display:flex; flex-direction:column; align-items:center; gap:6px; text-align:center; }
-          img { width:120px; height:120px; }
-          .tag { font-family: 'Courier New', monospace; font-size:13px; font-weight:700; background:#F68B37; color:#4D2305; padding:2px 8px; border-radius:4px; }
-          .name { font-size:12px; color:#221F20; max-width:140px; }
+          * { box-sizing: border-box; }
+          body {
+            font-family: Arial, sans-serif;
+            margin: 16px;
+            ${isSingle ? 'display:flex; align-items:center; justify-content:center; height:100vh; margin:0;' : ''}
+          }
+          .sheet {
+            display: grid;
+            grid-template-columns: repeat(${count === 1 ? 1 : count === 2 ? 2 : 3}, auto);
+            gap: 10px;
+            justify-content: ${isSingle ? 'center' : 'start'};
+          }
+          .sticker {
+            border: 1px dashed #999;
+            border-radius: 6px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-align: center;
+            break-inside: avoid;
+          }
+          img { width: 120px; height: 120px; }
+          .tag {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            background: #F68B37;
+            color: #4D2305;
+            padding: 2px 8px;
+            border-radius: 4px;
+          }
+          .name { font-size: 12px; color: #221F20; max-width: 140px; }
+          @media print { body { margin: 8px; } }
         </style>
       </head>
       <body onload="window.print()">
-        <div class="sticker">
-          <img src="${qrDataUrl}" alt="QR code">
-          <span class="tag">${escapeHTML(item.asset_tag)}</span>
-          <span class="name">${escapeHTML(item.name)}</span>
+        <div class="sheet">
+          ${stickerHTML.repeat(count)}
         </div>
       </body>
     </html>
