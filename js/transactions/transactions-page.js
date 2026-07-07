@@ -422,6 +422,8 @@ async function renderIssueStep(overlay, flowState) {
           assetTag: flowState.item.asset_tag,
           dueDate: dueDateInput.value,
           borrowerName: flowState.borrower.full_name,
+          issuerName: profile.full_name,
+          issuerEmail: profile.email,
         });
       } catch (err) {
         showToast(err.message, 'error');

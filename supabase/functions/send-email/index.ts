@@ -1,15 +1,11 @@
 // ============================================================
 // EDGE FUNCTION: send-email
-// Called directly by the frontend right after a successful issue
-// or return action. Expects a JSON body identifying which template
-// to send and the data to fill it with.
-//
 // Deploy with: supabase functions deploy send-email
 // ============================================================
 import { sendEmail, emailLayout, tagChipHTML } from "../_shared/email.ts";
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*", // tighten to your GitHub Pages domain after deploying
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
@@ -19,9 +15,15 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { type, to, data } = await req.json();
+    const body = await req.json();
+    const { type, to, data } = body;
+
+    // Log the full incoming payload so we can see exactly what the frontend sent
+    console.log(`[send-email] type=${type} to=${to}`);
+    console.log(`[send-email] data=${JSON.stringify(data)}`);
 
     if (!to) {
+      console.log(`[send-email] Skipped — no borrower email`);
       return new Response(JSON.stringify({ skipped: true, reason: "No recipient email on file." }), {
         headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
       });
@@ -29,6 +31,7 @@ Deno.serve(async (req) => {
 
     let subject = "";
     let html = "";
+    let cc = undefined;
 
     switch (type) {
       case "issued": {
@@ -41,6 +44,14 @@ Deno.serve(async (req) => {
 <tr><td style="padding:4px 0; color:#5E5658;">Due back</td><td style="padding:4px 0; font-weight:600;">${data.dueDate}</td></tr>
 </table>
 <p>Please return it on or before the due date. Reply to this email or contact your IT administrator with any questions.</p>`);
+
+        // CC the issuer on issue confirmations
+        if (data.issuerEmail && data.issuerEmail !== to) {
+          cc = data.issuerEmail;
+          console.log(`[send-email] Will CC issuer: ${cc}`);
+        } else {
+          console.log(`[send-email] No CC — issuerEmail="${data.issuerEmail}" to="${to}"`);
+        }
         break;
       }
 
@@ -63,13 +74,13 @@ Deno.serve(async (req) => {
         });
     }
 
-    await sendEmail({ to, subject, html });
+    await sendEmail({ to, cc, subject, html });
 
-    return new Response(JSON.stringify({ sent: true }), {
+    return new Response(JSON.stringify({ sent: true, cc: cc || null }), {
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
     });
   } catch (err) {
-    console.error("send-email error:", err);
+    console.error("[send-email] Error:", err.message);
     return new Response(JSON.stringify({ error: err.message }), {
       status: 500,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },

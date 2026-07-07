@@ -1,22 +1,11 @@
 // ============================================================
 // SHARED EMAIL SENDER (Deno / Supabase Edge Functions)
-// Uses Gmail SMTP with an app password via the `denomailer` library.
-// Secrets (GMAIL_USER, GMAIL_APP_PASSWORD) are set via:
-//   supabase secrets set GMAIL_USER=you@gmail.com
-//   supabase secrets set GMAIL_APP_PASSWORD=xxxxxxxxxxxxxxxx
-// These never touch the frontend — they only exist on Supabase's servers.
 // ============================================================
 import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 
 const GMAIL_USER = Deno.env.get("GMAIL_USER");
 const GMAIL_APP_PASSWORD = Deno.env.get("GMAIL_APP_PASSWORD");
 
-/**
- * Strip HTML tags down to a reasonably clean plain-text fallback.
- * denomailer requires an explicit `content` (plain-text) field —
- * leaving it unset/relying on its 'auto' mode is what caused stray
- * "=20" quoted-printable artifacts to leak into the rendered email.
- */
 function htmlToPlainText(html) {
   return html
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
@@ -36,17 +25,21 @@ function htmlToPlainText(html) {
 /**
  * Send an email via Gmail SMTP.
  * @param {object} params
- * @param {string} params.to - recipient email
+ * @param {string} params.to - recipient email (borrower)
+ * @param {string} [params.cc] - CC recipient email (issuer)
  * @param {string} params.subject
  * @param {string} params.html - HTML body
  */
-export async function sendEmail({ to, subject, html }) {
+export async function sendEmail({ to, cc, subject, html }) {
   if (!GMAIL_USER || !GMAIL_APP_PASSWORD) {
-    throw new Error("GMAIL_USER / GMAIL_APP_PASSWORD secrets are not set on this Edge Function.");
+    throw new Error("GMAIL_USER / GMAIL_APP_PASSWORD secrets are not set.");
   }
   if (!to) {
-    throw new Error("No recipient email provided — skipping send.");
+    throw new Error("No recipient email provided.");
   }
+
+  // Log what we're about to send for diagnostics
+  console.log(`[sendEmail] to=${to} cc=${cc || "none"} subject="${subject}"`);
 
   const client = new SMTPClient({
     connection: {
@@ -60,18 +53,29 @@ export async function sendEmail({ to, subject, html }) {
     },
   });
 
-  await client.send({
+  const sendConfig = {
     from: `AssetTrack <${GMAIL_USER}>`,
     to,
     subject,
     content: htmlToPlainText(html),
     html,
-  });
+  };
 
+  // Only add cc field if it has a real value and differs from 'to'
+  if (cc && cc !== to) {
+    sendConfig.cc = cc;
+    console.log(`[sendEmail] CC set to: ${cc}`);
+  } else {
+    console.log(`[sendEmail] No CC added (cc="${cc}", to="${to}")`);
+  }
+
+  await client.send(sendConfig);
   await client.close();
+
+  console.log(`[sendEmail] Sent successfully`);
 }
 
-/** Shared wrapper so every email looks consistent and on-brand. */
+/** Shared email layout wrapper */
 export function emailLayout(title, bodyHtml) {
   return `<div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #221F20;">
 <div style="background:#221F20; padding:16px 20px; border-radius:10px 10px 0 0;">
