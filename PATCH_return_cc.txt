@@ -1,0 +1,51 @@
+================================================================
+PATCH: js/transactions/transactions-page.js
+================================================================
+Open this file in VS Code and make these TWO changes:
+
+----------------------------------------------------------------
+CHANGE 1 — Find the triggerEmail('issued', ...) call.
+It currently looks like this:
+
+        triggerEmail('issued', flowState.borrower.email, {
+          itemName: flowState.item.name,
+          assetTag: flowState.item.asset_tag,
+          dueDate: dueDateInput.value,
+          borrowerName: flowState.borrower.full_name,
+          issuerName: profile.full_name,
+          issuerEmail: profile.email,
+        });
+
+Make sure issuerName and issuerEmail are there.
+If they are already — no change needed for this one.
+
+----------------------------------------------------------------
+CHANGE 2 — Find the triggerEmail('returned', ...) call.
+It currently looks like this (WITHOUT the issuer fields):
+
+        triggerEmail('returned', tx.borrowers?.email, {
+          itemName: tx.items?.name,
+          assetTag: tx.items?.asset_tag,
+          borrowerName: tx.borrowers?.full_name,
+        });
+
+REPLACE IT with this (adds issuerName and issuerEmail):
+
+        triggerEmail('returned', tx.borrowers?.email, {
+          itemName: tx.items?.name,
+          assetTag: tx.items?.asset_tag,
+          borrowerName: tx.borrowers?.full_name,
+          issuerName: profile.full_name,
+          issuerEmail: profile.email,
+        });
+
+----------------------------------------------------------------
+That's the only frontend change needed.
+The Edge Function (send-email) already handles CC for both
+'issued' and 'returned' types.
+
+After making the change, save the file — no redeploy needed
+for this frontend change (it goes live immediately in the
+browser). The Edge Function was already deployed with CC
+support for both types.
+================================================================

@@ -492,6 +492,8 @@ async function handleReturn(tx) {
         itemName: tx.items?.name,
         assetTag: tx.items?.asset_tag,
         borrowerName: tx.borrowers?.full_name,
+        issuerName: profile.full_name,
+        issuerEmail: profile.email,
       });
     } catch (err) {
       showToast(err.message, 'error');

@@ -64,6 +64,14 @@ Deno.serve(async (req) => {
 <tr><td style="padding:4px 0; color:#5E5658;">Asset Tag</td><td style="padding:4px 0;">${tagChipHTML(data.assetTag)}</td></tr>
 </table>
 <p>Thanks for returning it. No further action is needed.</p>`);
+
+        // CC the staff member who processed the return
+        if (data.issuerEmail && data.issuerEmail !== to) {
+          cc = data.issuerEmail;
+          console.log(`[send-email] Will CC issuer on return: ${cc}`);
+        } else {
+          console.log(`[send-email] No CC on return — issuerEmail="${data.issuerEmail}" to="${to}"`);
+        }
         break;
       }
 
