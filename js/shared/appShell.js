@@ -6,38 +6,36 @@
 // ============================================================
 import { logout } from '../auth/auth.js';
 
-// Inline SVG icons (stroke-based, 24x24 viewbox) — no external icon
-// dependency needed for the handful we use.
 const ICONS = {
   dashboard: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
   items: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
   borrowers: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>',
   transactions: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 7h11l-2.5-2.5M17 17H6l2.5 2.5"/></svg>',
-  reports: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5M4 19h16M8 16v-4M12 16V8M16 16v-7"/></svg>',
   inventory: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8"/></svg>',
+  reports: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5M4 19h16M8 16v-4M12 16V8M16 16v-7"/></svg>',
   users: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><path d="M2 19c0-3 3-5 7-5s7 2 7 5M16 4.5c1.7.3 3 1.8 3 3.5s-1.3 3.2-3 3.5M19 14c2 .4 3.5 1.8 3.5 3.5"/></svg>',
+  departments: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
   logout: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>',
   menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
 };
 
 // Primary nav — visible to all authenticated roles
 const NAV_ITEMS = [
-  { key: 'dashboard', label: 'Dashboard', href: 'dashboard.html', icon: 'dashboard', inBottomNav: true },
-  { key: 'items', label: 'Items', href: 'items.html', icon: 'items', inBottomNav: true },
-  { key: 'borrowers', label: 'Borrowers', href: 'borrowers.html', icon: 'borrowers', inBottomNav: false },
-  { key: 'transactions', label: 'Transactions', href: 'transactions.html', icon: 'transactions', inBottomNav: true },
-  { key: 'inventory', label: 'Inventory', href: 'inventory.html', icon: 'inventory', inBottomNav: false },
-  { key: 'reports', label: 'Reports', href: 'reports.html', icon: 'reports', inBottomNav: false },
+  { key: 'dashboard',    label: 'Dashboard',    href: 'dashboard.html',    icon: 'dashboard',    inBottomNav: true  },
+  { key: 'items',        label: 'Items',        href: 'items.html',        icon: 'items',        inBottomNav: true  },
+  { key: 'borrowers',   label: 'Borrowers',    href: 'borrowers.html',    icon: 'borrowers',    inBottomNav: false },
+  { key: 'transactions', label: 'Transactions', href: 'transactions.html', icon: 'transactions', inBottomNav: true  },
+  { key: 'inventory',   label: 'Inventory',    href: 'inventory.html',    icon: 'inventory',    inBottomNav: false },
+  { key: 'reports',     label: 'Reports',      href: 'reports.html',      icon: 'reports',      inBottomNav: false },
 ];
 
-// Future module placeholders — none currently. Kept as an empty array so
-// the "Coming Soon" rendering path in navLinkHTML remains available for
-// any future module without needing shell changes.
+// No future placeholders currently
 const FUTURE_NAV_ITEMS = [];
 
 // Admin-only nav
 const ADMIN_NAV_ITEMS = [
-  { key: 'users', label: 'Manage Users', href: 'users.html', icon: 'users', inBottomNav: false },
+  { key: 'users',       label: 'Manage Users', href: 'users.html',       icon: 'users',       inBottomNav: false },
+  { key: 'departments', label: 'Departments',  href: 'departments.html', icon: 'departments', inBottomNav: false },
 ];
 
 function navLinkHTML(item, activeKey) {
@@ -62,15 +60,8 @@ function initials(fullName) {
   return fullName.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join('');
 }
 
-/**
- * Mount the app shell chrome into the page.
- * @param {object} profile - current user's profile row
- * @param {string} activeKey - which nav item is active (e.g. 'dashboard')
- * @param {string} pageTitle - shown in the topbar
- */
 export function mountShell(profile, activeKey, pageTitle) {
   const isAdmin = profile.role === 'admin';
-  const allNavItems = [...NAV_ITEMS, ...FUTURE_NAV_ITEMS, ...(isAdmin ? ADMIN_NAV_ITEMS : [])];
   const bottomNavItems = NAV_ITEMS.filter(i => i.inBottomNav);
 
   // ---- Sidebar ----
@@ -162,7 +153,7 @@ export function mountShell(profile, activeKey, pageTitle) {
   document.body.appendChild(scrim);
   document.body.appendChild(bottomNav);
 
-  // ---- Behavior: mobile drawer open/close ----
+  // ---- Behavior: mobile drawer ----
   const menuToggle = document.getElementById('menuToggle');
   menuToggle.addEventListener('click', () => {
     sidebar.classList.add('is-open');
@@ -174,29 +165,18 @@ export function mountShell(profile, activeKey, pageTitle) {
   });
 
   // ---- Behavior: logout ----
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    logout();
-  });
+  document.getElementById('logoutBtn').addEventListener('click', () => logout());
 
   return { contentSlot, topbarActions: document.getElementById('topbarActions') };
 }
 
-/**
- * Set a numeric badge on a nav item (sidebar + bottom nav) after the
- * shell has mounted — e.g. an overdue-loans count. Pass 0 to clear it.
- */
 export function setNavBadge(navKey, count) {
-  document.querySelectorAll(`.sidebar-nav a.nav-link, .bottom-nav a.bottom-nav-link`).forEach((link) => {
+  document.querySelectorAll('.sidebar-nav a.nav-link, .bottom-nav a.bottom-nav-link').forEach((link) => {
     const isMatch = link.getAttribute('href') === NAV_ITEMS.find(i => i.key === navKey)?.href;
     if (!isMatch) return;
-
     let badge = link.querySelector('.nav-badge');
     if (count > 0) {
-      if (!badge) {
-        badge = document.createElement('span');
-        badge.className = 'nav-badge';
-        link.appendChild(badge);
-      }
+      if (!badge) { badge = document.createElement('span'); badge.className = 'nav-badge'; link.appendChild(badge); }
       badge.textContent = count > 99 ? '99+' : String(count);
     } else if (badge) {
       badge.remove();

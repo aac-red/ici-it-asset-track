@@ -1,0 +1,21 @@
+// ============================================================
+// PATCH: js/shared/appShell.js
+// Add Departments to ADMIN_NAV_ITEMS and add its icon
+// ============================================================
+
+// STEP 1: Find the ICONS object and add this entry:
+// (Add it alongside the existing 'users' icon entry)
+
+  departments: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+
+// STEP 2: Find ADMIN_NAV_ITEMS array and add Departments entry:
+// It currently looks like:
+//   const ADMIN_NAV_ITEMS = [
+//     { key: 'users', label: 'Manage Users', href: 'users.html', icon: 'users', inBottomNav: false },
+//   ];
+//
+// Change it to:
+const ADMIN_NAV_ITEMS = [
+  { key: 'users', label: 'Manage Users', href: 'users.html', icon: 'users', inBottomNav: false },
+  { key: 'departments', label: 'Departments', href: 'departments.html', icon: 'departments', inBottomNav: false },
+];

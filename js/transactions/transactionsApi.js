@@ -1,14 +1,5 @@
 // ============================================================
 // TRANSACTIONS DATA MODULE
-// Handles issuing items, returning them, and overdue detection.
-//
-// Design note on "overdue": we don't store a cron-updated status.
-// Instead, status is 'active' while out, 'returned' once back, and
-// "overdue" is a DERIVED state computed from due_date vs. today
-// for any 'active' transaction. This avoids needing a scheduled
-// job just to keep a status column in sync, and is always accurate
-// the moment the page loads. Phase 5's email job re-derives the
-// same way server-side.
 // ============================================================
 import { supabase } from '../shared/supabaseClient.js';
 
@@ -19,12 +10,21 @@ const SELECT_WITH_RELATIONS = `
   profiles ( id, full_name )
 `;
 
-/** True if a transaction is active and past its due date. */
+/**
+ * True if a transaction is active and past its due date.
+ *
+ * FIX: Compare YYYY-MM-DD strings directly instead of converting
+ * to Date objects. new Date("2026-07-13") parses as UTC midnight,
+ * but today in PHT (UTC+8) is 8 hours ahead — causing items due
+ * "today" to appear not-yet-overdue until 8 AM the next day.
+ * String comparison avoids this entirely since YYYY-MM-DD sorts
+ * lexicographically the same as chronologically.
+ */
 export function isOverdue(tx) {
   if (tx.status !== 'active') return false;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return new Date(tx.due_date) < today;
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  return tx.due_date < todayStr;
 }
 
 /** Get a display status that includes the derived 'overdue' state. */
@@ -88,11 +88,7 @@ export async function fetchAvailableItems() {
 }
 
 /**
- * Issue an item to a borrower. Wrapped logically as: create the
- * transaction, then flip the item's status to 'borrowed'.
- * Supabase JS doesn't have a multi-table client-side transaction,
- * so we do it in sequence and roll back the transaction row if the
- * item update fails (best-effort consistency for a client-only app).
+ * Issue an item to a borrower.
  */
 export async function issueItem({ itemId, borrowerId, dueDate, notes, issuedBy }) {
   const { data: txData, error: txError } = await supabase
@@ -116,8 +112,6 @@ export async function issueItem({ itemId, borrowerId, dueDate, notes, issuedBy }
     .eq('id', itemId);
 
   if (itemError) {
-    // Roll back the transaction row so we don't leave an orphaned
-    // "active" loan for an item that's still marked available.
     await supabase.from('transactions').delete().eq('id', txData.id);
     throw new Error('Could not update item status. Please try again.');
   }
@@ -127,7 +121,6 @@ export async function issueItem({ itemId, borrowerId, dueDate, notes, issuedBy }
 
 /**
  * Mark a transaction as returned and flip the item back to available.
- * `condition` lets staff optionally update the item's condition on return.
  */
 export async function returnItem(transactionId, itemId, { condition } = {}) {
   const { error: txError } = await supabase
@@ -148,7 +141,7 @@ export async function returnItem(transactionId, itemId, { condition } = {}) {
   if (itemError) throw new Error('Item marked returned, but condition update failed.');
 }
 
-/** Quick counts for dashboard/badges: { active, overdue, returnedToday } */
+/** Quick counts for dashboard/badges: { active, overdue } */
 export async function fetchTransactionStats() {
   const { data, error } = await supabase
     .from('transactions')
