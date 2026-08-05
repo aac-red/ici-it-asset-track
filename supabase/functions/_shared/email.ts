@@ -25,31 +25,25 @@ function htmlToPlainText(html) {
 /**
  * Send an email via Gmail SMTP.
  * @param {object} params
- * @param {string} params.to - recipient email (borrower)
- * @param {string} [params.cc] - CC recipient email (issuer)
+ * @param {string} params.to - recipient
+ * @param {string} [params.cc] - optional CC recipient
  * @param {string} params.subject
- * @param {string} params.html - HTML body
+ * @param {string} params.html
  */
 export async function sendEmail({ to, cc, subject, html }) {
   if (!GMAIL_USER || !GMAIL_APP_PASSWORD) {
-    throw new Error("GMAIL_USER / GMAIL_APP_PASSWORD secrets are not set.");
+    throw new Error("GMAIL_USER / GMAIL_APP_PASSWORD secrets not set.");
   }
-  if (!to) {
-    throw new Error("No recipient email provided.");
-  }
+  if (!to) throw new Error("No recipient email provided.");
 
-  // Log what we're about to send for diagnostics
-  console.log(`[sendEmail] to=${to} cc=${cc || "none"} subject="${subject}"`);
+  console.log(`[sendEmail] to=${to} cc=${cc || 'none'} subject="${subject}"`);
 
   const client = new SMTPClient({
     connection: {
       hostname: "smtp.gmail.com",
       port: 465,
       tls: true,
-      auth: {
-        username: GMAIL_USER,
-        password: GMAIL_APP_PASSWORD,
-      },
+      auth: { username: GMAIL_USER, password: GMAIL_APP_PASSWORD },
     },
   });
 
@@ -61,21 +55,16 @@ export async function sendEmail({ to, cc, subject, html }) {
     html,
   };
 
-  // Only add cc field if it has a real value and differs from 'to'
   if (cc && cc !== to) {
     sendConfig.cc = cc;
-    console.log(`[sendEmail] CC set to: ${cc}`);
-  } else {
-    console.log(`[sendEmail] No CC added (cc="${cc}", to="${to}")`);
+    console.log(`[sendEmail] CC: ${cc}`);
   }
 
   await client.send(sendConfig);
   await client.close();
-
   console.log(`[sendEmail] Sent successfully`);
 }
 
-/** Shared email layout wrapper */
 export function emailLayout(title, bodyHtml) {
   return `<div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 24px; color: #221F20;">
 <div style="background:#221F20; padding:16px 20px; border-radius:10px 10px 0 0;">
@@ -92,5 +81,5 @@ This is an automated message from your organization's AssetTrack system.
 }
 
 export function tagChipHTML(tag) {
-  return `<span style="font-family: monospace; font-weight:600; background:#F68B37; color:#4D2305; padding:2px 8px; border-radius:6px; font-size:13px;">${tag}</span>`;
+  return `<span style="font-family:monospace; font-weight:600; background:#F68B37; color:#4D2305; padding:2px 8px; border-radius:6px; font-size:13px;">${tag}</span>`;
 }
