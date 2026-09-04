@@ -15,9 +15,10 @@ const ICONS = {
   reports: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5M4 19h16M8 16v-4M12 16V8M16 16v-7"/></svg>',
   users: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><path d="M2 19c0-3 3-5 7-5s7 2 7 5M16 4.5c1.7.3 3 1.8 3 3.5s-1.3 3.2-3 3.5M19 14c2 .4 3.5 1.8 3.5 3.5"/></svg>',
   departments: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
-  logout: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>',
-  menu: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="22" height="22"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
+  activityLog: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 12h6M9 16h4M6 4H4a2 2 0 00-2 2v14a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2h-2"/><rect x="6" y="2" width="12" height="4" rx="1"/></svg>',
+  logout: '<svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>'
 };
+
 
 // Primary nav — visible to all authenticated roles
 const NAV_ITEMS = [
@@ -36,6 +37,7 @@ const FUTURE_NAV_ITEMS = [];
 const ADMIN_NAV_ITEMS = [
   { key: 'users',       label: 'Manage Users', href: 'users.html',       icon: 'users',       inBottomNav: false },
   { key: 'departments', label: 'Departments',  href: 'departments.html', icon: 'departments', inBottomNav: false },
+  { key: 'activity-log', label: 'Activity Log',  href: 'activity-log.html', icon: 'activityLog', inBottomNav: false },
 ];
 
 function navLinkHTML(item, activeKey) {

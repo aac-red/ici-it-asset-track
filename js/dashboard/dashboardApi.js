@@ -30,17 +30,7 @@ export async function fetchDashboardStats() {
   };
 }
 
-/** Item counts grouped by category, for the bar chart. */
-export async function fetchItemsByCategory() {
-  const { data, error } = await supabase.from('items').select('category');
-  if (error) throw new Error(error.message);
 
-  const counts = {};
-  data.forEach((item) => {
-    counts[item.category] = (counts[item.category] || 0) + 1;
-  });
-  return counts; // { Laptop: 12, Monitor: 5, ... }
-}
 
 /** Item counts grouped by status, for the donut chart. */
 export async function fetchItemsByStatus() {

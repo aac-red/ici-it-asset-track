@@ -6,7 +6,7 @@
 import { requireAuth } from '../auth/auth.js';
 import { mountShell, setNavBadge } from '../shared/appShell.js';
 import {
-  fetchDashboardStats, fetchItemsByCategory, fetchItemsByStatus,
+  fetchDashboardStats, fetchItemsByStatus,
   fetchMostBorrowedItems, fetchRecentActivity,
 } from './dashboardApi.js';
 
@@ -33,10 +33,7 @@ function renderSkeleton(contentSlot, profile) {
 
     <div class="dashboard-grid">
       <div>
-        <div class="chart-card">
-          <h3>Items by Category</h3>
-          <div class="chart-canvas-wrap"><canvas id="categoryChart"></canvas></div>
-        </div>
+
         <div class="chart-card">
           <h3>Most Borrowed Items</h3>
           <div class="top-items-list" id="topItemsList"><p class="cell-muted">Loading…</p></div>
@@ -62,16 +59,14 @@ function renderStatSkeleton() {
 
 async function loadDashboardData(profile) {
   try {
-    const [stats, byCategory, byStatus, topItems, activity] = await Promise.all([
+    const [stats, byStatus, topItems, activity] = await Promise.all([
       fetchDashboardStats(),
-      fetchItemsByCategory(),
       fetchItemsByStatus(),
       fetchMostBorrowedItems(5),
       fetchRecentActivity(8),
     ]);
 
     renderStatCards(stats);
-    renderCategoryChart(byCategory);
     renderStatusChart(byStatus);
     renderTopItems(topItems);
     renderActivityFeed(activity);
@@ -104,39 +99,6 @@ function renderStatCards(stats) {
   `).join('');
 }
 
-function renderCategoryChart(byCategory) {
-  const ctx = document.getElementById('categoryChart');
-  const labels = Object.keys(byCategory);
-  const values = Object.values(byCategory);
-
-  if (labels.length === 0) {
-    ctx.closest('.chart-canvas-wrap').innerHTML = '<div class="empty-state"><p>No items yet.</p></div>';
-    return;
-  }
-
-  charts.category?.destroy();
-  charts.category = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        data: values,
-        backgroundColor: '#F68B37',
-        borderRadius: 6,
-        maxBarThickness: 40,
-      }],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: '#E6E1DF' } },
-        x: { grid: { display: false } },
-      },
-    },
-  });
-}
 
 function renderStatusChart(byStatus) {
   const ctx = document.getElementById('statusChart');
