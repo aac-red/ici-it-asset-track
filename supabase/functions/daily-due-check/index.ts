@@ -26,8 +26,8 @@ Deno.serve(async (_req) => {
   const { data: activeLoans, error } = await supabase
     .from("transactions")
     .select(`id, due_date, reminder_sent_at, overdue_alert_sent_at,
-      items ( asset_tag, name ),
-      borrowers ( full_name, email )`)
+      items:item_id ( asset_tag, name ),
+      borrowers:borrower_id ( full_name, email )`)
     .eq("status", "active");
 
   if (error) {
@@ -55,7 +55,7 @@ Deno.serve(async (_req) => {
         try {
           await sendEmail({
             to: borrowerEmail, cc: adminCc,
-            subject: `${PREFIX} Reminder: Item Due Tomorrow – ${assetTag} | Ref: ${ref}`,
+            subject: `${PREFIX} Reminder: Item Due Tomorrow - ${assetTag} | Ref: ${ref}`,
             html: emailLayout("Item Due Tomorrow", `<p>Hi ${borrowerName},</p>
 <p>This is a friendly reminder that the following item is due back <strong>tomorrow</strong>:</p>
 <table style="width:100%; margin:16px 0; font-size:14px;">
@@ -82,8 +82,8 @@ Deno.serve(async (_req) => {
             to: borrowerEmail || ADMIN_ALERT_EMAIL,
             cc: borrowerEmail ? adminCc : undefined,
             subject: isToday
-              ? `${PREFIX} Item Due Today – ${assetTag} | Ref: ${ref}`
-              : `${PREFIX} Overdue Notice – ${assetTag} | Ref: ${ref}`,
+              ? `${PREFIX} Item Due Today - ${assetTag} | Ref: ${ref}`
+              : `${PREFIX} Overdue Notice - ${assetTag} | Ref: ${ref}`,
             html: emailLayout(isToday ? "Item Due Today" : "Item Overdue", `<p>Hi ${borrowerName},</p>
 <p>The following item is ${isToday ? "due back <strong>today</strong>" : `<strong style="color:#D62A2B;">overdue</strong>`}:</p>
 <table style="width:100%; margin:16px 0; font-size:14px;">
