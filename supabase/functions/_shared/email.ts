@@ -6,7 +6,7 @@ import { SMTPClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
 const GMAIL_USER = Deno.env.get("GMAIL_USER");
 const GMAIL_APP_PASSWORD = Deno.env.get("GMAIL_APP_PASSWORD");
 
-function htmlToPlainText(html: string): string {
+function htmlToPlainText(html) {
   return html
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
     .replace(/<br\s*\/?>/gi, '\n')
@@ -19,8 +19,6 @@ function htmlToPlainText(html: string): string {
     .replace(/&gt;/g, '>')
     .replace(/[ \t]+\n/g, '\n')
     .replace(/\n{3,}/g, '\n\n')
-    // Remove any lines that accidentally look like MIME headers
-    .replace(/^Content-[^\n]*/gm, '')
     .trim();
 }
 
@@ -49,15 +47,12 @@ export async function sendEmail({ to, cc, subject, html }) {
     },
   });
 
-  // Keep plain text minimal — avoid any strings that look like MIME boundaries
-  const plainText = htmlToPlainText(html);
-
-  const sendConfig: Record<string, unknown> = {
+  const sendConfig = {
     from: `AssetTrack <${GMAIL_USER}>`,
     to,
     subject,
-    content: plainText,   // plain-text fallback
-    html,                 // HTML version
+    content: htmlToPlainText(html),
+    html,
   };
 
   if (cc && cc !== to) {
